@@ -199,7 +199,19 @@
     animation: ch-in 950ms both;
   }
 
-  .caption { margin-top: 1.8vmin; font-size: 13px; font-weight: 400; letter-spacing: 0.16em; color: var(--text-soft); animation: blur-rise 850ms both; animation-delay: 760ms; }
+  /* 小字：从短促的象声词改为一句话 —— 去掉宽字距（汉字不该被拆开），
+     给出行宽与行高，避免在窄屏上撑破版面 */
+  .caption {
+    margin-top: 2vmin;
+    max-width: 30ch;
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.8;
+    letter-spacing: 0.03em;
+    color: var(--text-soft);
+    animation: blur-rise 850ms both;
+    animation-delay: 760ms;
+  }
 
   /* ---------- 双语 quote ---------- */
   .quote { margin-top: 5.2vmin; max-width: 380px; }
@@ -511,7 +523,7 @@
     <div class="decor" aria-hidden="true"><div class="ring"></div><div class="ring--inner"></div></div>
 
     <h1 class="name" id="name">amoko</h1>
-    <p class="caption">咕~咕↘嘎↗嘎↘！饿啊！</p>
+    <p class="caption">不知道写什么，但是点右上角的切换按钮会有很炫酷的动画</p>
 
     <div class="quote" id="quote">
       <div class="rule"><span class="qmark"></span></div>
