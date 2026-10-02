@@ -332,35 +332,6 @@
   }
   .credits.is-active .credits__end { opacity: 1; transform: none; transition-delay: 900ms; }
 
-  /* 访客计数：单个数字，呼应名字的衬线质感 */
-  .visit-count {
-    margin-top: 7vh;
-    margin-bottom: 0;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 700ms var(--ease-expo), transform 700ms var(--ease-expo);
-  }
-  .credits.is-active .visit-count { opacity: 1; transform: none; }
-  /* 延迟用 animation-delay 而非 transition-delay：后者只在状态变化瞬间生效，
-     而此环境 timeline 不推进，transition 整个不跑。改用 animation 更可靠。 */
-  .visit-count__num {
-    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
-    font-weight: 300;
-    font-size: clamp(28px, 5.5vw, 40px);
-    line-height: 1;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    font-variant-numeric: tabular-nums;
-  }
-  .visit-count__label {
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    color: var(--text-2);
-  }
-
   /* 鸣谢页结尾的联系方式：给页面一个出口 */
   .credits__contact {
     display: flex;
@@ -514,7 +485,7 @@
     }
     .quote .qmark { transition: none; }
     /* 鸣谢：不叠牌，直接呈现 */
-    .credits__label, .credits__note, .credits__end, .credits__contact, .visit-count { opacity: 1; transform: none; transition: none; }
+    .credits__label, .credits__note, .credits__end, .credits__contact { opacity: 1; transform: none; transition: none; }
     /* 名单行：去掉擦除与位移，只留极短的淡入 */
     .credit, .credits.is-active .credit { animation: fade 260ms ease-out both; animation-delay: 0ms; }
     .credits.is-active .credit__glyph { animation: fade 260ms ease-out both; animation-delay: 0ms; }
@@ -586,11 +557,6 @@
       </ul>
 
       <span class="credits__end" aria-hidden="true"></span>
-
-      <p class="visit-count">
-        <span class="visit-count__num" id="visitCount">0</span>
-        <span class="visit-count__label">次到访</span>
-      </p>
 
       <div class="credits__contact">
         <a href="mailto:amokoc@qq.com">amokoc@qq.com</a>
@@ -1308,40 +1274,6 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
 
-  /* ============================================================
-     访客计数：localStorage 持久化，每次打开 +1
-     ============================================================ */
-  (function visitCounter(){
-    const KEY = 'amoko_visits';
-    const el = document.getElementById('visitCount');
-    let n = 0;
-    try { n = parseInt(localStorage.getItem(KEY) || '0', 10) || 0; } catch(e){}
-    n += 1;
-    try { localStorage.setItem(KEY, String(n)); } catch(e){}
-
-    /* 等鸣谢区揭示后再开始递增，避免数字在用户看不到时跑完 */
-    function countUp(target){
-      if (reduceMotion()){ el.textContent = target.toLocaleString(); return; }
-      const start = performance.now();
-      const dur = 1100;
-      function tick(now){
-        const u = Math.min(1, (now - start) / dur);
-        const e = 1 - Math.pow(1 - u, 3);   // expo-out
-        el.textContent = Math.floor(target * e).toLocaleString();
-        if (u < 1) requestAnimationFrame(tick);
-        else el.textContent = target.toLocaleString();
-      }
-      requestAnimationFrame(tick);
-    }
-
-    if (credited) countUp(n);
-    else {
-      const wait = setInterval(()=>{
-        if (credited){ clearInterval(wait); countUp(n); }
-      }, 120);
-      setTimeout(()=>{ clearInterval(wait); el.textContent = n.toLocaleString(); }, 12000);
-    }
-  })();
 
   /* ============================================================
      启动：幕布 → 海洋预热波（从近处扫向远处）
